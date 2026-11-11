@@ -1,0 +1,6 @@
+{
+  "name": "Life Commander",
+  "description": "Your Personal Life Management System. Track daily routines, 6h study, 7h wife time, 7h sleep, exercise, prayers, focus mode, and AI coaching.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
