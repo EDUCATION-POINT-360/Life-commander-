@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <meta name="background-color" content="#101010">
+  <meta name="description" content="LIFE COMMANDER is your all-in-one personal life management application. Organize your daily routine, manage your timetable, track habits, set goals, monitor productivity, and receive intelligent AI coaching to build a disciplined and successful lifestyle.">
+  
+  <!-- Mobile & PWA Optimization -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LIFE COMMANDER">
+  <meta name="application-name" content="LIFE COMMANDER">
+  <meta name="msapplication-TileColor" content="#101010">
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>LIFE COMMANDER — Personal Life Management System</title>
+
+  <style>
+    :root {
+      --bg-primary: #101010;
+      --bg-secondary: #1B1B1B;
+      --card-bg: #222222;
+      --surface-variant: #2C2C2C;
+      --border-color: #383838;
+      --accent-red: #E53935;
+      --accent-red-dark: #B71C1C;
+      --accent-gold: #FFC857;
+      --accent-gold-dark: #D4A017;
+      --text-primary: #FFFFFF;
+      --text-secondary: #AAAAAA;
+      --text-muted: #757575;
+      --success: #4CAF50;
+      --warning: #FF9800;
+      --info: #29B6F6;
+      --purple: #AB47BC;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(74px + var(--safe-bottom));
+    }
+
+    /* Top Bar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 16px;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .card.gold-border {
+      border-color: var(--accent-gold);
+    }
+
+    .card.red-border {
+      border-color: var(--accent-red);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+    }
+
+    /* Discipline Score Badge */
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .score-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+    }
+
+    /* Progress Bars */
+    .progress-bar-wrap {
+      margin-top: 10px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--surface-variant);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background: var(--accent-red);
+      color: #FFFFFF;
+    }
+
+    .btn-gold {
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    /* Bottom Navigation Bar */
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 12px calc(8px + var(--safe-bottom));
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 6px 12px;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--accent-gold);
+      background: rgba(229, 57, 53, 0.15);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    /* Timer Display */
+    .timer-circle {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 3px solid var(--accent-gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 16px auto;
+    }
+
+    .timer-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--text-primary);
+    }
+
+    .timer-status {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--success);
+    }
+
+    /* Checklist Item */
+    .check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .check-row.completed {
+      border-color: rgba(76, 175, 80, 0.4);
+      opacity: 0.7;
+    }
+
+    .check-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .custom-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .completed .custom-checkbox {
+      background: var(--success);
+      border-color: var(--success);
+      color: #FFF;
+    }
+
+    /* PWA Update Banner */
+    .update-banner {
+      display: none;
+      background: var(--accent-red);
+      color: #FFF;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* RTL */
+    html[dir="rtl"] {
+      direction: rtl;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Service Worker Update Banner -->
+  <div id="update-banner" class="update-banner">
+    <span>A new version of Life Commander is ready.</span>
+    <button class="btn-pill" style="border-color:#FFF; color:#FFF" onclick="reloadApp()">Update</button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="brand-title" id="txt-app-name">LIFE COMMANDER</div>
+      <div class="brand-subtitle" id="txt-app-subtitle">Personal Life Management System</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-pill" id="lang-btn" onclick="toggleLanguage()">اردو</button>
+      <button class="btn-pill" id="install-btn" style="display:none;" onclick="triggerInstall()">Install App</button>
+    </div>
+  </header>
+
+  <!-- Screens -->
+  <main>
+    <!-- Screen 1: Dashboard -->
+    <section id="screen-dashboard">
+      <div class="card gold-border">
+        <div class="card-header">
+          <div>
+            <div class="card-tag" id="txt-welcome">WELCOME BACK, COMMANDER</div>
+            <div class="card-title">Daily Command Center</div>
+          </div>
+          <div class="score-badge">
+            <span class="score-dot"></span>
+            <span id="score-display">95 / 100</span>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+          Execute today's 24-hour targets with high discipline.
+        </p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="startDay()">START MY DAY</button>
+      </div>
+
+      <!-- Core Targets -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 12px; color: var(--accent-gold);">DAILY TARGET PROGRESS</div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-labels">
+            <span style="color:var(--text-secondary)">Study Target (6h)</span>
+            <span style="font-weight:700" id="study-val">6.0 / 6.0 Hours</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width: 100%; background: var(--accent-red)"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-labels">
+            <span style="color:var(--text-secondary)">Wife Time Target (7h)</span>
+            <span style="font-weight:700" id="wife-val">7.0 / 7.0 Hours</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width: 100%; background: var(--accent-gold)"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-labels">
+            <span style="color:var(--text-secondary)">Sleep Target (7h)</span>
+            <span style="font-weight:700" id="sleep-val">7.0 / 7.0 Hours</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width: 100%; background: var(--purple)"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-labels">
+            <span style="color:var(--text-secondary)">Physical Exercise (60m)</span>
+            <span style="font-weight:700" id="exercise-val">60 / 60 Minutes</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width: 100%; background: var(--success)"></div></div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-labels">
+            <span style="color:var(--text-secondary)">Five Daily Prayers (5)</span>
+            <span style="font-weight:700" id="prayers-val">5 / 5 Offered</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width: 100%; background: var(--info)"></div></div>
+        </div>
+      </div>
+
+      <!-- Next Scheduled Activity -->
+      <div class="card">
+        <div class="card-tag">UPCOMING TIMETABLE ACTIVITY</div>
+        <div class="card-title" style="margin-top: 4px;">Study Session 1: Deep Work (2h)</div>
+        <div style="color: var(--accent-gold); font-size: 13px; margin-top: 4px;">07:00 AM – 09:00 AM • High Priority</div>
+      </div>
+    </section>
+
+    <!-- Screen 2: Timetable -->
+    <section id="screen-timetable" style="display:none;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">24-Hour Timetable</div>
+          <div style="font-size: 12px; color: var(--accent-gold);">Total Scheduled: 24.0 / 24.0 Hours</div>
+        </div>
+        <button class="btn btn-gold" onclick="resetRoutine()">Reset 24h</button>
+      </div>
+
+      <div id="timetable-list">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Screen 3: Tasks -->
+    <section id="screen-tasks" style="display:none;">
+      <div class="card-header">
+        <div class="card-title">Priority Tasks & Goals</div>
+        <button class="btn btn-primary" onclick="promptAddTask()">+ New Task</button>
+      </div>
+      <div id="tasks-list">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Screen 4: Focus & Timers -->
+    <section id="screen-focus" style="display:none;">
+      <div class="card gold-border" style="text-align: center;">
+        <div class="card-tag" id="timer-mode-tag">POMODORO STUDY TIMER (25m)</div>
+        <div class="timer-circle">
+          <div class="timer-text" id="timer-display">25:00</div>
+          <div class="timer-status" id="timer-status">READY</div>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 14px;">
+          <button class="btn btn-primary" id="timer-toggle-btn" onclick="toggleTimer()">Start Timer</button>
+          <button class="btn btn-gold" onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen 5: AI Coach -->
+    <section id="screen-coach" style="display:none;">
+      <div class="card gold-border">
+        <div class="card-tag">COMMANDER AI COACH</div>
+        <div class="card-title">Tactical Routine & Discipline Audit</div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin: 10px 0 16px;" id="ai-feedback">
+          "Target progress is optimal. Your 6-hour study target is balanced with 7 hours of wife companionship and 7 hours of restorative sleep. Maintain unshakeable discipline."
+        </p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="evaluateRoutine()">Run Live Audit</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav>
+    <button class="nav-item active" onclick="switchScreen('dashboard')">
+      <span class="nav-icon">📊</span>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('timetable')">
+      <span class="nav-icon">📅</span>
+      <span>Timetable</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('tasks')">
+      <span class="nav-icon">🎯</span>
+      <span>Tasks</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('focus')">
+      <span class="nav-icon">⏱️</span>
+      <span>Focus</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('coach')">
+      <span class="nav-icon">🤖</span>
+      <span>AI Coach</span>
+    </button>
+  </nav>
+
+  <script>
+    // State & Persistent Storage
+    let currentLang = localStorage.getItem('life_commander_lang') || 'en';
+    let currentScreen = 'dashboard';
+    let deferredPrompt = null;
+
+    // Routine Data
+    const defaultRoutine = [
+      { id: 1, title: 'Wake up & Fajr Prayer', time: '06:00 AM – 06:15 AM', cat: 'Prayer', completed: true },
+      { id: 2, title: 'Morning Exercise (30m)', time: '06:15 AM – 06:45 AM', cat: 'Exercise', completed: true },
+      { id: 3, title: 'Freshen Up & Preparation', time: '06:45 AM – 07:00 AM', cat: 'Personal', completed: true },
+      { id: 4, title: 'Study Session 1: Deep Work (2h)', time: '07:00 AM – 09:00 AM', cat: 'Study', completed: true },
+      { id: 5, title: 'Wife Quality Time (Morning 3h)', time: '09:00 AM – 12:00 PM', cat: 'Wife', completed: true },
+      { id: 6, title: 'Zuhr Prayer, Lunch & Personal', time: '12:00 PM – 01:00 PM', cat: 'Prayer', completed: true },
+      { id: 7, title: 'Study Session 2: Focus (2h)', time: '01:00 PM – 03:00 PM', cat: 'Study', completed: true },
+      { id: 8, title: 'Wife Quality Time (Afternoon 2.5h)', time: '03:00 PM – 05:30 PM', cat: 'Wife', completed: true },
+      { id: 9, title: 'Evening Workout (30m)', time: '05:30 PM – 06:00 PM', cat: 'Exercise', completed: true },
+      { id: 10, title: 'Maghrib Prayer & Family Dinner', time: '06:00 PM – 07:00 PM', cat: 'Prayer', completed: true },
+      { id: 11, title: 'Wife Quality Time (Evening 1.5h)', time: '07:00 PM – 08:30 PM', cat: 'Wife', completed: true },
+      { id: 12, title: 'Isha Prayer & Personal Reflection', time: '08:30 PM – 09:00 PM', cat: 'Prayer', completed: true },
+      { id: 13, title: 'Night Study Session 3 (2h)', time: '09:00 PM – 11:00 PM', cat: 'Study', completed: true },
+      { id: 14, title: 'Night Sleep (7 Hours Rest)', time: '11:00 PM – 06:00 AM', cat: 'Sleep', completed: true }
+    ];
+
+    let routine = JSON.parse(localStorage.getItem('life_commander_routine')) || defaultRoutine;
+    let tasks = JSON.parse(localStorage.getItem('life_commander_tasks')) || [
+      { id: 1, title: 'Complete Software Architecture Module', priority: 'HIGH', completed: true },
+      { id: 2, title: 'Engage 7 hours wife companionship', priority: 'HIGH', completed: true },
+      { id: 3, title: 'Review 5 daily prayers on time', priority: 'HIGH', completed: true }
+    ];
+
+    function renderTimetable() {
+      const container = document.getElementById('timetable-list');
+      container.innerHTML = routine.map(item => `
+        <div class="check-row ${item.completed ? 'completed' : ''}" onclick="toggleRoutine(${item.id})">
+          <div class="check-info">
+            <div class="custom-checkbox">${item.completed ? '✓' : ''}</div>
+            <div>
+              <div style="font-weight:700; font-size:14px">${item.title}</div>
+              <div style="font-size:12px; color:var(--accent-gold)">${item.time} • ${item.cat}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleRoutine(id) {
+      routine = routine.map(r => r.id === id ? { ...r, completed: !r.completed } : r);
+      localStorage.setItem('life_commander_routine', JSON.stringify(routine));
+      renderTimetable();
+    }
+
+    function resetRoutine() {
+      routine = defaultRoutine;
+      localStorage.setItem('life_commander_routine', JSON.stringify(routine));
+      renderTimetable();
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('tasks-list');
+      container.innerHTML = tasks.map(t => `
+        <div class="check-row ${t.completed ? 'completed' : ''}" onclick="toggleTask(${t.id})">
+          <div class="check-info">
+            <div class="custom-checkbox">${t.completed ? '✓' : ''}</div>
+            <div>
+              <div style="font-weight:700; font-size:14px">${t.title}</div>
+              <div style="font-size:11px; color:var(--accent-red)">${t.priority} PRIORITY</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      localStorage.setItem('life_commander_tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    function promptAddTask() {
+      const title = prompt('Enter Task Title:');
+      if (title && title.trim()) {
+        tasks.push({ id: Date.now(), title: title.trim(), priority: 'MEDIUM', completed: false });
+        localStorage.setItem('life_commander_tasks', JSON.stringify(tasks));
+        renderTasks();
+      }
+    }
+
+    // Screen Switching
+    function switchScreen(screen) {
+      currentScreen = screen;
+      ['dashboard', 'timetable', 'tasks', 'focus', 'coach'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.style.display = (s === screen) ? 'block' : 'none';
+      });
+
+      document.querySelectorAll('.nav-item').forEach((btn, index) => {
+        const screens = ['dashboard', 'timetable', 'tasks', 'focus', 'coach'];
+        btn.classList.toggle('active', screens[index] === screen);
+      });
+
+      if (screen === 'timetable') renderTimetable();
+      if (screen === 'tasks') renderTasks();
+    }
+
+    // Timer State
+    let timerRunning = false;
+    let timerSeconds = 25 * 60;
+    let timerInterval = null;
+
+    function toggleTimer() {
+      timerRunning = !timerRunning;
+      const btn = document.getElementById('timer-toggle-btn');
+      const status = document.getElementById('timer-status');
+      if (timerRunning) {
+        btn.textContent = 'Pause Timer';
+        status.textContent = 'ACTIVE';
+        status.style.color = 'var(--accent-gold)';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            btn.textContent = 'Start Timer';
+            status.textContent = 'SESSION COMPLETED';
+            status.style.color = 'var(--success)';
+          }
+        }, 1000);
+      } else {
+        clearInterval(timerInterval);
+        btn.textContent = 'Resume Timer';
+        status.textContent = 'PAUSED';
+        status.style.color = 'var(--warning)';
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSeconds = 25 * 60;
+      updateTimerDisplay();
+      document.getElementById('timer-toggle-btn').textContent = 'Start Timer';
+      document.getElementById('timer-status').textContent = 'READY';
+      document.getElementById('timer-status').style.color = 'var(--success)';
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerSeconds / 60);
+      const s = timerSeconds % 60;
+      document.getElementById('timer-display').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Language Toggle
+    function toggleLanguage() {
+      currentLang = (currentLang === 'en') ? 'ur' : 'en';
+      localStorage.setItem('life_commander_lang', currentLang);
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      const isUrdu = currentLang === 'ur';
+      document.documentElement.lang = isUrdu ? 'ur' : 'en';
+      document.documentElement.dir = isUrdu ? 'rtl' : 'ltr';
+      document.getElementById('lang-btn').textContent = isUrdu ? 'EN' : 'اردو';
+      document.getElementById('txt-app-name').textContent = isUrdu ? 'لائف کمانڈر' : 'LIFE COMMANDER';
+      document.getElementById('txt-app-subtitle').textContent = isUrdu ? 'ذاتی زندگی کا نظام الاوقات' : 'Personal Life Management System';
+      document.getElementById('txt-welcome').textContent = isUrdu ? 'خوش آمدید، کمانڈر' : 'WELCOME BACK, COMMANDER';
+    }
+
+    function startDay() {
+      alert(currentLang === 'ur' ? 'دن کا آغاز ہو گیا! اپنے اہداف کو وقت پر مکمل کریں۔' : 'Day initialized! Execute your routine with discipline.');
+    }
+
+    function evaluateRoutine() {
+      const isUrdu = currentLang === 'ur';
+      document.getElementById('ai-feedback').textContent = isUrdu
+        ? 'ماشاءاللہ! آج کا ڈسپلن اسکور 95 ہے۔ پڑھائی کے 6 گھنٹے، اہلیہ کے ساتھ 7 گھنٹے اور تمام 5 نمازیں کامیابی سے مکمل ہوئیں۔'
+        : 'Discipline rating: 95/100. 6-hour study target met, 7 hours wife companionship fulfilled, and all 5 daily prayers offered on time. Outstanding execution.';
+    }
+
+    // Check URL search params for shortcuts or share target
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetScreen = urlParams.get('screen');
+    if (targetScreen) {
+      if (['dashboard', 'timetable', 'tasks', 'focus', 'coach', 'habits'].includes(targetScreen)) {
+        switchScreen(targetScreen === 'habits' ? 'tasks' : targetScreen);
+      }
+    }
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    document.getElementById('update-banner').style.display = 'flex';
+                  }
+                };
+              }
+            };
+          })
+          .catch((err) => console.log('SW registration note:', err));
+      });
+    }
+
+    function reloadApp() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(reg => {
+          if (reg && reg.waiting) {
+            reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+          window.location.reload();
+        });
+      }
+    }
+
+    // PWA Install Prompt Capture
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('install-btn');
+      if (installBtn) installBtn.style.display = 'inline-block';
+    });
+
+    function triggerInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('install-btn').style.display = 'none';
+        });
+      }
+    }
+
+    // Initial render
+    applyLanguage();
+    renderTimetable();
+    renderTasks();
+  </script>
+</body>
+</html>
